@@ -1,4 +1,5 @@
 class MerchantsController < ApplicationController
+  before_filter :authenticate_merchant!, except: [:home, :help]
   before_action :authenticate_merchant!
   respond_to :html, :js
 
@@ -11,7 +12,7 @@ class MerchantsController < ApplicationController
   end
 
   def show
-    @user = User.find(params[:id])
+    @merchant = Mechant.find(params[:id])
   end
 
 end

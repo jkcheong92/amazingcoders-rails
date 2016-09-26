@@ -17,3 +17,9 @@
 
 # Ignore the .idea folder
 /.idea
+
+# Ignore picture upload
+/public/system
+
+# ignore cloudinary keys
+cloudinary.yml

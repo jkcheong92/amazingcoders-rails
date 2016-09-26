@@ -1,0 +1,94 @@
+// SASS variable overrides must be declared before loading up Active Admin's styles.
+//
+// To view the variables that Active Admin provides, take a look at
+// `app/assets/stylesheets/active_admin/mixins/_variables.css.scss` in the
+// Active Admin source.
+//
+// For example, to change the sidebar width:
+// $sidebar-width: 242px;
+
+// Active Admin's got SASS!
+@import "active_admin/_mixins";
+@import "active_admin/_base";
+
+div.venuesCol {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 150px;
+}
+div.venuesCol:hover {
+  text-overflow: inherit;
+  overflow: visible;
+  white-space: pre-wrap;
+}
+div.descriptionCol {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200px;
+}
+div.descriptionCol:hover {
+  text-overflow: inherit;
+  overflow: visible;
+  white-space: pre-wrap;
+}
+
+div.numberCol {
+  max-width: 20px !important;
+}
+
+div.col-lg-6 {
+  position: relative;
+  min-height: 1px;
+  padding-right: 15px;
+  padding-left: 15px;
+  float: left;
+  width: 50%;
+  box-sizing: border-box;
+}
+
+div.col-lg-3 {
+  position: relative;
+  min-height: 1px;
+  padding-right: 15px;
+  padding-left: 15px;
+  float: left;
+  width: 25%;
+  box-sizing: border-box;
+}
+
+div.col-lg-4 {
+  position: relative;
+  min-height: 1px;
+  padding-right: 15px;
+  padding-left: 15px;
+  float: left;
+  width: 33%;
+  box-sizing: border-box;
+}
+
+div.cross-sell {
+  text-align: center;
+  background-color: #434348;
+  color: white;
+  border-radius: 10px;
+  margin-left: 2px;
+  margin-right: 2px;
+  padding-top: 15px;
+  font-weight: bold;
+}
+
+p.cross-sell-header {
+  text-transform: uppercase;
+  margin-bottom: 1em;
+  line-height: 1;
+  font-weight: bold;
+  font-size: 14px;
+  color: #90ED7D;
+}
+
+// Overriding any non-variable SASS must be done after the fact.
+// For example, to change the default status-tag color:
+//
+//   .status_tag { background: #6090DB; }

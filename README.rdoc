@@ -2,35 +2,101 @@
 
 Things to take note when developing:
 
-* Branching 
-	* Checkout from 'develop' Branch
-	* Indicate which system and what feature: <system>/<feature>, for e.g dms/create_deal
+    * Branching
+        * Checkout from 'develop' Branch
+        * Indicate which system and what feature: <system>/<feature>, for e.g dms/create_deal
 
-* Generate Pull Request
-	* Tag the person to notify the pull request
+    * Generate Pull Request
+        * Tag the person to notify the pull request
+
+Things to do to get the application up and running:
+
+    * Ruby version
+        - Ruby 2.0.0
+        - Rails 4.1
+        - Windows: install railsinstaller via http://railsinstaller.org/en
+        - Mac OSx: refer to other web references
+
+    * Database creation
+        - Postgresql database download via: http://www.postgresql.org/download/
+            * Please choose the right OS version to download, for e.g. install windows 64 or 32 based on PC configuration
+        - Install Postgresql
+            * setup a password for superuser postgres
+            * port be 5433
+            * set locale to be default
+
+    * Database initialization
+        - Use pgAdmin III console to do the following:
+            * create a corresponding database with name same as database.yml
+            * create a new login role corresponding with database.yml
+            * under the file tab of pgAdmin III, open pg_hba.config
+                % navigate to file path ~Postgresql/9.4/data, open pg_hba.config
+                % enable replication and set to all users
+
+    * Image Hosting
+        - Get 'Cloudinary.yml' and place it under 'config' folder
+        - bundle install gem 'cloudinary' and gem 'attachinary'
+        - rake db:migrate
+        - update Android;s corresponding Application file with the right remote Cloudinary configs.
+
+    * Stripe configurations
+        - add the stripe keys into environment variables as stated in ~initializers/ stripe.rb
+
+Things to do to deploy
+    - bundle install
+    - rake db:migrate
+    - rails server
+    - set server to listen on 0.0.0.0 (all interface)
+    - deployment to heroku
+        * requires heroku toolbelt
+        * heroku login <email>
+        * git push heroku master
+        * heroku run rails db:migrate
+        * heroku open
+        * heroku logs
+    -upgrade database
+        ** important run these commands in the following order
+        * heroku addons:create heroku-postgresql:hobby-basic
+        * heroku maintenance:on
+        * heroku ps:scale worker=0
+        * heroku pg:copy <DATABASE_URL> <Target Database> --app sushi
+        * heroku pg:copy source-application::OLIVE HEROKU_POSTGRESQL_PINK -a target-application
+        * heroku pg:promote HEROKU_POSTGRESQL_PINK
+        * heroku ps:scale worker=1
+        * heroku maintenance:off
+
+Things to do to run the test suite
+    * Important: navigate to seed.rb, change final_end_date = today's date, for e.g => "2015-12-01 00:00:00"
+    * To run all test cases
+        - rake test:units
+    * To run unit test on merchant
+        - rake test test/models/<test file>, for e.g. => rake test test/models/merchant_test.rb
+    * Directory for unit tests:
+        - ~/test/models
+    * Unit test files
+        - merchant_test.rb
+        - venue_test.rb
+        - payment_test.rb
+        - merchant_feedback_test.rb
+        - merchant_point_test.rb
+        - test_helper.rb
+    * testing accounts
+        - refer to test_accounts.docx
+
+Errors
+    * Windows not working with Coffee script above 1.80
+        - Find the gemfile in project folder (should be just a level below the project folder)
+        - Add  gem 'coffee-script-source', '1.8.0' to the gemfile
+        - After that, type bundle update coffee-script-source
 
 
+Things to run Android application:
+    * 2 ways to get the Android app running
+        - install the app to phone through attached apk file
+            % The attached apk file is pointing to the remote server on Heroku
+            % In case of error in fetching data from remote server, modify the endpoint.java file in android to point to the correct ip address.
 
-Things to take note to get the application up and running:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* Windows not working with Coffee script above 1.80
-	• Find the gemfile in project folder (should be just a level below the project folder)
-	• Add  gem 'coffee-script-source', '1.8.0' to the gemfile
-	• After that, type bundle update coffee-script-source
+        - install the app via Android Studio through the attached android repository source code
+            % In case of error in fetching data from remote server, modify the endpoint.java file in android to point to the correct ip address.
+            % Update Cloudinary configs in the Android application file.
 

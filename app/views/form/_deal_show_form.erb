@@ -1,94 +1,57 @@
 <p>
-  <strong>Title:</strong>
+  <strong><font size = "4">Title</font></strong><br>
   <%= @deal.title %>
 </p>
 
 <p>
-  <strong>Type of Deal:</strong>
+  <strong><font size = "4">Type of Deal</font></strong><br>
   <%= @deal.type_of_deal %><br>
 </p>
 
 <p>
-  <strong>Description:</strong>
+  <strong><font size = "4">Description</font></strong><br>
   <%= @deal.description %><br>
 </p>
 
 <p>
-  <strong>Deal Start Date:</strong>
-  <%= @deal.start_date %><br>
-</p>
+  <strong><font size = "4">Deal Period</font></strong><br>
+  <strong><%= @deal.start_date.strftime("%d/%m/%Y") %></strong> to <strong><%= @deal.expiry_date.strftime("%d/%m/%Y") %></strong>
 
-<p>
-  <strong>Expiry Date:</strong>
-  <%= @deal.expiry_date %><br>
-</p>
-
-<% for deal_day in @deal.deal_days%>
-    <strong> Days:</strong>
-    <% if deal_day.mon %>
-        Mon
-    <% end %>
-    <% if deal_day.tue && deal_day.mon %>
-        , Tue
-    <% elsif deal_day.tue %>
-        Tue
-    <%end %>
-    <% if deal_day.wed && (deal_day.tue || deal_day.mon) %>
-        , Wed
-    <% elsif deal_day.wed %>
-        Wed
-    <%end %>
-    <% if deal_day.thur && (deal_day.wed || deal_day.tue || deal_day.mon) %>
-        , Thur
-    <% elsif deal_day.thur %>
-        Thur
-    <%end %>
-    <% if deal_day.fri && (deal_day.thur || deal_day.wed || deal_day.tue || deal_day.mon) %>
-        , Thur
-    <% elsif deal_day.fri %>
-        Fri
-    <%end %>
-    <% if deal_day.sat && (deal_day.fri || deal_day.thur || deal_day.wed || deal_day.tue || deal_day.mon) %>
-        , Sat
-    <% elsif deal_day.sat %>
-        Sat
-    <%end %>
-    <% if deal_day.sun && (deal_day.sat || deal_day.fri || deal_day.thur || deal_day.wed || deal_day.tue || deal_day.mon) %>
-        , Sun
-    <% elsif deal_day.sun %>
-        Sun
-    <%end %>
-    <br>
-    <strong> Time period:</strong><br>
-    <% for deal_time in deal_day.deal_times%>
-        <%=h deal_time.started_at %>
-        to
-        <%=h deal_time.ended_at %><br>
-    <% end %>
-<% end %>
-
-<p>
-  <strong>Venue:</strong>
-  <% @deal.venues.each do |venue| %>
-      <span><%= venue.neighbourhood %></span>
+  <% for deal_day in @deal.deal_days%>
+      <br>
+      <strong><%= DealService.format_days (deal_day) %>:</strong>
+      <% for deal_time in deal_day.deal_times%>
+          <%=h deal_time.started_at.strftime("%H:%M") %> to <%=h deal_time.ended_at.strftime("%H:%M") %>&nbsp;&nbsp;
+      <% end %>
   <% end %>
 </p>
 
 <p>
-  <strong>Terms and Condition:</strong>
+  <strong><font size = "4">Venue</font></strong><br>
+  <% @deal.venues.each do |venue| %>
+      <span><%= venue.name %></span>&nbsp;&nbsp;
+  <% end %>
+</p>
+
+<p>
+  <strong><font size = "4">Terms and Condition</font></strong><br>
   <%= @deal.t_c %>
 </p>
 
 <p>
-  <strong>Has the deal been pushed to users?</strong>
-  <%= @deal.pushed %><br>
+  <strong><font size = "4">Deal Image</font></strong><br>
+  <% if @deal.image.present? %>
+      <%= cl_image_tag(@deal.image.path, { size: '100x100', crop: :fit }) %>
+  <% else %>
+      <%= image_tag 'biz/burpple_logo.png', :size => '100x100' %>
+  <% end %>
 </p>
 
 <p>
-  <strong>Can your code be redeemed?</strong>
+  <strong><font size = "4">Can your code be redeemed?</font></strong><br>
   <% if @deal.redeemable %>
       Yes <br>
-      <strong>How many times can this deal be redeemed per user?</strong>
+      <strong><font size = "4">How many times can this deal be redeemed per user?</font></strong><br>
       <% if !@deal.multiple_use %>
           Once per user <br>
       <% else %>
@@ -98,3 +61,16 @@
       No <br>
   <% end %>
 </p>
+
+<p>
+  <% if @deal.redeemable %>
+    <%= link_to "Download QRcodes for your deal here", deal_path(@deal, format: "pdf") %>
+  <% end %>
+</p>
+
+<div style="text-align: center">
+  <% if !@deal.active %>
+      <%= link_to 'Edit Deal', edit_deal_path, class: "btn btn-xs btn-success" %>
+  <% end %>
+  <%= link_to 'See all deals', deals_path, class: "btn btn-big btn-info" %>
+</div>

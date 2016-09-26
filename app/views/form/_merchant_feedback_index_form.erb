@@ -1,0 +1,27 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h4>Feedbacks History (Past Submitted Feedbacks)</h4>
+  </div>
+  <div class="panel-body" style="padding-bottom:0px">
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover">
+        <tr>
+          <th>Id</th>
+          <th>Title</th>
+          <th>Category</th>
+          <th>Description</th>
+          <th>Submitted on</th>
+        </tr>
+        <% @merchant_feedbacks.each do |merchant_feedback| %>
+            <tr>
+              <td><%= merchant_feedback.id %></td>
+              <td style="max-width: 200px;"><%= merchant_feedback.title %></td>
+              <td><%= merchant_feedback.category %></td>
+              <td style="max-width: 300px"><%= merchant_feedback.content %></td>
+              <td style="width: 200px"><%= merchant_feedback.created_at.strftime("%d/%m/%Y %r") %></td>
+            </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
+</div>
