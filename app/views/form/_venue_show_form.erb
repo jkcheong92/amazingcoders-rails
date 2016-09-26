@@ -1,4 +1,13 @@
 <p>
+  <strong>Venue Photo</strong><br>
+  <% if @venue.photo.present? %>
+      <%= cl_image_tag(@venue.photo.path, {size: '100x100', crop: :fit}) %>
+  <% else %>
+      <%= image_tag 'biz/burpple_logo.png', :size => '100x100' %>
+  <% end %>
+</p>
+
+<p>
   <strong>Name:</strong>
   <%= @venue.name %>
 </p>
@@ -8,30 +17,18 @@
   <%= @venue.street %>
 </p>
 
-<p>
-  <strong>Mall/Unit No</strong>
-  <%= @venue.address_2 %>
-</p>
+<% if !@venue.address_2.blank? %>
+    <p>
+      <strong>Mall/Unit No</strong>
+      <%= @venue.address_2 %>
+    </p>
+<% end %>
 
 <p>
   <strong>Postal Code</strong>
   <%= @venue.zipcode %>
 </p>
 
-<p>
-  <strong>City</strong>
-  <%= @venue.city %>
-</p>
-
-<p>
-  <strong>State</strong>
-  <%= @venue.state%>
-</p>
-
-<p>
-  <strong>Country</strong>
-  <%= @venue.country %>
-</p>
 
 <p>
   <strong>Neighbourhood</strong>
@@ -47,3 +44,29 @@
   <strong>Contact No</strong>
   <%= @venue.phone %>
 </p>
+
+<hr>
+<h3>Current Deals Offered</h3>
+<% if @payment.blank? || !@payment.paid? %>
+    <div class="well col-lg-6 col-lg-offset-3" style="text-align: center; font-weight: bold">
+      <p>Oops! You have not subscribed to our Deal Listing Service.</p>
+      <p><%= link_to 'Subscribe now', new_payment_path %></p>
+    </div>
+    <br><br><br><br>
+<% elsif @deals.blank? %>
+    <div class="well col-lg-6 col-lg-offset-3" style="text-align: center; font-weight: bold">
+      <p>Oops! You do not have any active deals for this venue. You can create a
+        deal <%= link_to 'here', new_deal_path %>.</p>
+    </div>
+    <br><br><br>
+<% else %>
+    <% deal_num = 1 %>
+    <% @deals.each do |deal| %>
+        <p><%= deal_num %>) <%= link_to deal.title, deal_path(deal) %></p>
+        <% deal_num = deal_num + 1 %>
+    <% end %>
+
+    <div style="text-align:center">
+      <%= link_to 'Add New Deal', new_deal_path, class: "btn btn-lg btn-success" %>
+    </div>
+<% end %>

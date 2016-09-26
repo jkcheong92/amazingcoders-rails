@@ -1,28 +1,30 @@
 class VenuesController < ApplicationController
-  before_action :set_venue, only: [:index, :show, :edit, :update, :destroy]
+  before_filter :authenticate_merchant!, except: [:home, :help]
+  before_action :set_venue, only: [:show, :edit, :update, :destroy]
   before_action :all_venues
 
   def index
-    # Get data required for form
-    @select_day_hours_string = "[]".html_safe
+    @venues = Venue.where(:merchant_id => merchant_id)
   end
 
   # GET /venues/new
   def new
     @venue = Venue.new
     # Get data required for form
-    @select_day_hours_string = "[]".html_safe
   end
 
   # GET /venues/1/edit
   def edit
     @venue = Venue.find(params[:id])
-
+    unless session[:merchant_id] == @venue.merchant_id
+      flash[:error] = "You don't have access to this page!"
+      redirect_to venues_path
+      return
+    end
     # Get data required for dashboard
     @venues = Venue.all
 
     # Get data required for form
-    @select_day_hours_string = "[]".html_safe
   end
 
   # POST /venues
@@ -57,12 +59,29 @@ class VenuesController < ApplicationController
       end
   end
 
+  def show
+    @venue = Venue.find(params[:id])
+    unless session[:merchant_id] == @venue.merchant_id
+      flash[:error] = "You don't have access to this page!"
+      redirect_to venues_path
+      return
+    end
+    @deals = VenueService.get_active_deals_for_venue(@venue.id).order(title: :asc)
+    @payment = MerchantService.get_deal_plan(merchant_id)
+    @ranking = DealAnalyticService.get_own_deals_ranking(merchant_id)
+  end
+
   # DELETE /venues/1
   # DELETE /venues/1.json
   def destroy
-    @venue.destroy
-    flash[:success] = "Deal deleted!"
-    redirect_to venues_path
+    if VenueService.allow_delete(@venue.id)
+      @venue.destroy
+      flash[:success] = "Venue deleted!"
+      redirect_to venues_path
+    else
+      flash[:error] = "Venue cannot be deleted as there is a deal that is only associated with this venue. Please delete the deal first or contact Burpple admin for help"
+      redirect_to venues_path
+    end
   end
 
   private
@@ -73,17 +92,12 @@ class VenuesController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_venue
-    unless @venue.present?
-      @venue = all_venues.first
-    else
-      @venue = Venue.find(params[:id])
-    end
+    @venue = Venue.find(params[:id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def venue_params
-    params.require(:venue).permit(:name, :street, :zipcode,
-                                  :city, :city, :state, :country, :neighbourhood, :bio,
+    params.require(:venue).permit(:name, :street, :zipcode, :photo, :neighbourhood, :bio,
                                   :phone, :address_2, :contact_number)
   end
 end

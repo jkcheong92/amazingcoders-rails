@@ -1,0 +1,27 @@
+<div style=" min-width:550px; max-width:50%; margin:100px auto" class="container">
+  <div class="panel panel-danger">
+    <div class="panel-heading">
+      <div class="panel-body">
+        <div style = "float:right">
+          <div style="display:inline-block" class="hidden-xs"><%= image_tag("biz/signin_logo.png", alt: "burpple", height: "100", width: "100") %></div>
+        </div>
+        <div style="display:inline-block"><h3>Forgot your password?</h3></div>
+      </div>
+    </div>
+    <div class="panel-body">
+
+      <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+          <%= devise_error_messages! %>
+
+          <div class="form-group">
+            <%= f.label :email %>
+            <%= f.email_field :email, autofocus: true, class:"input-block-level", placeholder:"Enter email to recover password" %>
+          </div>
+
+          <div class="actions" style="padding-top:20px">
+            <%= f.submit "Send me reset password instructions", class: "btn btn-info" %>
+          </div>
+      <% end %>
+    </div>
+  </div>
+</div>
